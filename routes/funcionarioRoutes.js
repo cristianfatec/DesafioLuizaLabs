@@ -33,12 +33,7 @@ router.post('/', async (req, res) => {
         return res.status(422).json({ error: 'Informar o nome, cargo, salário e desligado é obrigatório' });
     }
 
-    const funcionario = {
-        nome,
-        cargo,
-        salario,
-        desligado,
-    };
+    const funcionario = { nome, cargo, salario, desligado };
 
     try {
         await Funcionario.create(funcionario);
@@ -48,7 +43,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-/// Atualizar um funcionário específico
+// Atualizar um funcionário específico
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
@@ -68,17 +63,13 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// DELETE (Excluir um funcionário específico pelo nome)
-router.delete('/', async (req, res) => {
-    const { nome } = req.body;
-
-    if (!nome) {
-        return res.status(422).json({ error: 'Informar o nome é obrigatório' });
-    }
+// DELETE (Excluir um funcionário específico pelo ID)
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
 
     try {
-        const result = await Funcionario.deleteOne({ nome: nome });
-        if (result.deletedCount === 0) {
+        const result = await Funcionario.findByIdAndDelete(id);
+        if (!result) {
             return res.status(404).json({ error: 'Funcionário não encontrado' });
         }
         res.status(200).json({ message: 'Funcionário excluído com sucesso!' });
